@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Flight Fare Predictor</title>
+  <style>
+    body { font-family: Arial, sans-serif; background: #eef2f7; margin: 0; padding: 30px; }
+    .card { max-width: 520px; margin: auto; background: #fff; padding: 28px;
+            border-radius: 12px; box-shadow: 0 4px 14px rgba(0,0,0,.1); }
+    h1 { margin-top: 0; text-align: center; }
+    label { display: block; margin: 14px 0 4px; font-weight: bold; font-size: 14px; }
+    select, input { width: 100%; padding: 9px; border: 1px solid #ccc;
+                    border-radius: 6px; font-size: 15px; box-sizing: border-box; }
+    button { width: 100%; margin-top: 22px; padding: 12px; border: 0; border-radius: 6px;
+             background: #2563eb; color: #fff; font-size: 16px; cursor: pointer; }
+    button:hover { background: #1d4ed8; }
+    .result { margin-top: 20px; padding: 14px; background: #e8f7ee; border-radius: 6px;
+              text-align: center; font-size: 20px; color: #166534; }
+    .error { margin-top: 20px; padding: 12px; background: #fdecea; color: #b42318;
+             border-radius: 6px; }
+  </style>
+</head>
+<body>
+<div class="card">
+  <h1>✈️ Flight Fare Predictor</h1>
+
+  <form method="POST">
+    <label>Airline</label>
+    <select name="airline" required>
+      {% for a in airlines %}
+      <option value="{{ a }}" {% if form.get('airline') == a %}selected{% endif %}>{{ a }}</option>
+      {% endfor %}
+    </select>
+
+    <label>Source</label>
+    <select name="source" required>
+      {% for s in sources %}
+      <option value="{{ s }}" {% if form.get('source') == s %}selected{% endif %}>{{ s }}</option>
+      {% endfor %}
+    </select>
+
+    <label>Destination</label>
+    <select name="destination" required>
+      {% for d in destinations %}
+      <option value="{{ d }}" {% if form.get('destination') == d %}selected{% endif %}>{{ d }}</option>
+      {% endfor %}
+    </select>
+
+    <label>Journey Date</label>
+    <input type="date" name="journey_date" value="{{ form.get('journey_date', '') }}" required>
+
+    <label>Departure Time</label>
+    <input type="time" name="dep_time" value="{{ form.get('dep_time', '') }}" required>
+
+    <label>Arrival Time</label>
+    <input type="time" name="arr_time" value="{{ form.get('arr_time', '') }}" required>
+
+    <label>Total Stops</label>
+    <select name="stops" required>
+      {% for s in stops %}
+      <option value="{{ s }}" {% if form.get('stops') == s %}selected{% endif %}>{{ s|capitalize }}</option>
+      {% endfor %}
+    </select>
+
+    <label>Additional Info</label>
+    <select name="info" required>
+      {% for i in info %}
+      <option value="{{ i }}" {% if form.get('info') == i %}selected{% endif %}>{{ i|capitalize }}</option>
+      {% endfor %}
+    </select>
+
+    <button type="submit">Predict Fare</button>
+  </form>
+
+  {% if prediction is not none %}
+    <div class="result">Estimated fare: <b>₹ {{ "{:,.0f}".format(prediction) }}</b></div>
+  {% endif %}
+  {% if error %}
+    <div class="error">{{ error }}</div>
+  {% endif %}
+</div>
+</body>
+</html>
